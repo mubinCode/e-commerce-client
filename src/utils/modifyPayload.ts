@@ -1,4 +1,4 @@
-export const modifyPayload = (payload: any) => {
+export const modifyPayload = <T,>(payload: T): FormData => {
   const object = { ...payload };
   const data = JSON.stringify(object);
   const formData = new FormData();
