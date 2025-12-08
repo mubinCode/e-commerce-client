@@ -1,51 +1,67 @@
-"use client"
+"use client";
 import assest from "@/assets";
 import { userLogin } from "@/services/actions/userLogin";
 import { storeUserInfo } from "@/services/auth-services";
-import { Box, Button, Container, Grid, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export type Inputs = {
-  email: string
-  password: string
-}
+  email: string;
+  password: string;
+};
 
 const LoginPage = () => {
-
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<Inputs>()
+  } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
       const res = await userLogin(data);
-      if(res?.data?.accessToken){
-        storeUserInfo({accessToken : res?.data?.accessToken})
+      if (res?.data?.accessToken) {
+        toast.success(res.message)
+        storeUserInfo({ accessToken: res?.data?.accessToken });
+        router.push("/")
       }
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
   return (
     <Container>
-      <Stack sx={{
+      <Stack
+        sx={{
           height: "100vh",
           justifyContent: "center",
           alignItems: "center",
-        }}>
-          <Box sx={{
+        }}
+      >
+        <Box
+          sx={{
             maxWidth: "600px",
             width: "100%",
             boxShadow: 1,
             borderRadius: 1,
             padding: 4,
             textAlign: "center",
-          }}>
+          }}
+        >
           <Stack
             sx={{
               justifyContent: "center",
@@ -66,7 +82,7 @@ const LoginPage = () => {
               </Typography>
             </Box>
           </Stack>
-                    <Box>
+          <Box>
             <form onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={2}>
                 <Grid size={{ md: 6 }}>
@@ -90,7 +106,12 @@ const LoginPage = () => {
                   />
                 </Grid>
               </Grid>
-                            <Typography textAlign="end" component="p" fontWeight={200} margin="5px 0px"> 
+              <Typography
+                textAlign="end"
+                component="p"
+                fontWeight={200}
+                margin="5px 0px"
+              >
                 forgot password?
               </Typography>
               <Button
@@ -108,8 +129,7 @@ const LoginPage = () => {
               </Typography>
             </form>
           </Box>
-          </Box>
-
+        </Box>
       </Stack>
     </Container>
   );
