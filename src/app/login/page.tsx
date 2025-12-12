@@ -2,35 +2,26 @@
 import assest from "@/assets";
 import { userLogin } from "@/services/actions/userLogin";
 import { storeUserInfo } from "@/services/auth-services";
+import RUForm from "@/services/ReUsableForms/RUForm";
+import RUInput from "@/services/ReUsableForms/RUInput";
 import {
   Box,
   Button,
   Container,
   Grid,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 
-export type Inputs = {
-  email: string;
-  password: string;
-};
 
 const LoginPage = () => {
   const router = useRouter();
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const handleLogin = async (data : FieldValues) => {
     try {
       const res = await userLogin(data);
       if (res?.data?.accessToken) {
@@ -83,26 +74,22 @@ const LoginPage = () => {
             </Box>
           </Stack>
           <Box>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <RUForm onSubmit={handleLogin}>
               <Grid container spacing={2}>
                 <Grid size={{ md: 6 }}>
-                  <TextField
+                  <RUInput
+                  name="email"
                     label="Email"
                     type="email"
-                    variant="outlined"
-                    size="small"
                     fullWidth={true}
-                    {...register("email")}
                   />
                 </Grid>
                 <Grid size={{ md: 6 }}>
-                  <TextField
+                  <RUInput
+                  name="password"
                     label="Password"
                     type="password"
-                    variant="outlined"
-                    size="small"
                     fullWidth={true}
-                    {...register("password")}
                   />
                 </Grid>
               </Grid>
@@ -127,7 +114,7 @@ const LoginPage = () => {
                 Don&apos;t have an account? please{" "}
                 <Link href={"/register"}>Register</Link>
               </Typography>
-            </form>
+            </RUForm>
           </Box>
         </Box>
       </Stack>

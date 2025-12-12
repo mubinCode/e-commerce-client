@@ -16,6 +16,8 @@ import { modifyPayload } from "@/utils/modifyPayload";
 import { createCustomer } from "@/services/actions/createCustomer";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { userLogin } from "@/services/actions/userLogin";
+import { storeUserInfo } from "@/services/auth-services";
 
 type TCustomerData = {
     name: string
@@ -44,7 +46,12 @@ const RegisterPage = () => {
         const res = await createCustomer(payload)
         if(res?.data?.id){
           toast.success(res?.message)
-          router.push("/login")
+                const result = await userLogin({email:data.customer.email, password: data.password});
+                if (result?.data?.accessToken) {
+                  // toast.success(result.message)
+                  storeUserInfo({ accessToken: result?.data?.accessToken });
+                  router.push("/")
+                }
         }
       }catch(err){
         console.error(err)
