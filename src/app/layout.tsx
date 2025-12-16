@@ -27,18 +27,18 @@ export default function RootLayout({
 }>) {
   return (
     <Providers>
-      <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
           <AppRouterCacheProvider>
             <>
-            <Toaster position="top-center"/>
-            {children}
+              <Toaster position="top-center" />
+              {children}
             </>
           </AppRouterCacheProvider>
-        </body>
-      </html>
+      </body>
+    </html>
     </Providers>
   );
 }

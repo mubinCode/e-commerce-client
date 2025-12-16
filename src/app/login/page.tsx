@@ -4,30 +4,34 @@ import { userLogin } from "@/services/actions/userLogin";
 import { storeUserInfo } from "@/services/auth-services";
 import RUForm from "@/services/ReUsableForms/RUForm";
 import RUInput from "@/services/ReUsableForms/RUInput";
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 
+export const validationSchema = z.object({
+  email: z.email("Please give a valid email"),
+  password: z.string().min(6, "Please give valid password"),
+});
 
 const LoginPage = () => {
   const router = useRouter();
-  const handleLogin = async (data : FieldValues) => {
+  const [error, setError] = useState("");
+  const handleLogin = async (data: FieldValues) => {
     try {
       const res = await userLogin(data);
       if (res?.data?.accessToken) {
-        toast.success(res.message)
+        toast.success(res.message);
         storeUserInfo({ accessToken: res?.data?.accessToken });
-        router.push("/")
+        router.push("/");
+      } else {
+        toast.error(res.message);
+        setError(res.message);
       }
     } catch (err) {
       console.error(err);
@@ -73,23 +77,44 @@ const LoginPage = () => {
               </Typography>
             </Box>
           </Stack>
+          {error && (
+            <Box>
+              <Typography
+                sx={{
+                  backgroundColor: "red",
+                  padding: "5px",
+                  margin: "15px 0px",
+                  borderRadius: "10px",
+                  color: "white",
+                }}
+                variant="h6"
+              >
+                {error}
+              </Typography>
+            </Box>
+          )}
           <Box>
-            <RUForm onSubmit={handleLogin}>
+            <RUForm
+              onSubmit={handleLogin}
+              resolver={zodResolver(validationSchema)}
+            >
               <Grid container spacing={2}>
                 <Grid size={{ md: 6 }}>
                   <RUInput
-                  name="email"
+                    name="email"
                     label="Email"
                     type="email"
                     fullWidth={true}
+                    // required={true}
                   />
                 </Grid>
                 <Grid size={{ md: 6 }}>
                   <RUInput
-                  name="password"
+                    name="password"
                     label="Password"
                     type="password"
                     fullWidth={true}
+                    // required={true}
                   />
                 </Grid>
               </Grid>

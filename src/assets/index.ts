@@ -7,7 +7,6 @@ import grocery from "./images/grocery.png";
 import kids from "./images/kids.png";
 import orange from "./images/orange.png";
 import grid from "./svg/grid.svg";
-import smartPhone from "./images/smartPhone.jpg"
 import laptops from "./images/laptop.png"
 import electronics from "./images/electronics.jpg"
 import tshirt from "./images/t-shirt.jpeg"
@@ -26,7 +25,6 @@ const assest = {
     grocery,
     kids,
     orange,
-    smartPhone,
     laptops,
     electronics,
     tshirt,

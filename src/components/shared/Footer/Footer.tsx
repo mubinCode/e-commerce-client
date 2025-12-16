@@ -28,7 +28,9 @@ const Footer = () => {
           <Image src={GoogleIcons} height={30} width={30} alt="instagram" />
           <Image src={LinkedInIcons} height={30} width={30} alt="instagram" />
         </Stack>
-        <div className="border-b-[1px] border-dashed"></div>
+        <Box sx={{
+          border: "1px dashed lightgray"
+        }}></Box>
         <Stack
           direction="row"
           justifyContent="space-between"

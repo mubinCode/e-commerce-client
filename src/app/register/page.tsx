@@ -5,41 +5,40 @@ import {
   Container,
   Grid,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import Image from "next/image";
 import assest from "@/assets";
 import Link from "next/link";
-import { SubmitHandler, useForm } from "react-hook-form";
 import { modifyPayload } from "@/utils/modifyPayload";
 import { createCustomer } from "@/services/actions/createCustomer";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { userLogin } from "@/services/actions/userLogin";
 import { storeUserInfo } from "@/services/auth-services";
+import RUForm from "@/services/ReUsableForms/RUForm";
+import { FieldValues } from "react-hook-form";
+import RUInput from "@/services/ReUsableForms/RUInput";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 
-type TCustomerData = {
-    name: string
-    email: string
-    contactNumber: string
-    address: string
-    gender: string
-  }
-type TCustomerRegisterData = {
-  password: string
-  customer: TCustomerData
-}
+export const validationSchema = z.object({
+  password: z.string().min(6, "Please give valid password"),
+  customer: z.object({
+    name: z.string().min(1, "Give a valid customer name"),
+    email: z.email("Give a proper email"),
+    contactNumber: z.string().regex(/^\d{11}$/, "Give a BD valid cell phone number"),
+    address: z.string().min(1,"Give your address").optional()
+  })
+})
 
 const RegisterPage = () => {
+
   const router = useRouter();
-    const {
-      register,
-      handleSubmit,
-      watch,
-      formState: { errors },
-    } = useForm<TCustomerRegisterData>()
-    const onSubmit: SubmitHandler<TCustomerRegisterData> = async (data) => {
+  const [error, setError] = useState("");
+
+    const handleRegister = async (data: FieldValues) => {
       data.customer.gender = "MALE"
       const payload = modifyPayload(data)
       try{
@@ -48,10 +47,12 @@ const RegisterPage = () => {
           toast.success(res?.message)
                 const result = await userLogin({email:data.customer.email, password: data.password});
                 if (result?.data?.accessToken) {
-                  // toast.success(result.message)
                   storeUserInfo({ accessToken: result?.data?.accessToken });
                   router.push("/")
                 }
+        }else{
+          toast.error(res?.message)
+          setError(res.message)
         }
       }catch(err){
         console.error(err)
@@ -97,56 +98,68 @@ const RegisterPage = () => {
               </Typography>
             </Box>
           </Stack>
+          {error && (
+            <Box>
+              <Typography
+                sx={{
+                  backgroundColor: "red",
+                  padding: "5px",
+                  margin: "15px 0px",
+                  borderRadius: "10px",
+                  color: "white",
+                }}
+                variant="h6"
+              >
+                {error}
+              </Typography>
+            </Box>
+          )}
           <Box>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <RUForm onSubmit={handleRegister} resolver={zodResolver(validationSchema)}>
               <Grid container spacing={2}>
                 <Grid size={{ md: 12 }}>
-                  <TextField
+                  <RUInput
+                  name="customer.name"
                     label="Name"
-                    variant="outlined"
                     size="small"
                     fullWidth={true}
-                    {...register("customer.name")}
                   />
                 </Grid>
                 <Grid size={{ md: 6 }}>
-                  <TextField
+                  <RUInput
+                  name="customer.email"
                     label="Email"
                     type="email"
-                    variant="outlined"
                     size="small"
                     fullWidth={true}
-                    {...register("customer.email")}
                   />
                 </Grid>
                 <Grid size={{ md: 6 }}>
-                  <TextField
+                  <RUInput
+                  name="password"
                     label="Password"
                     type="password"
-                    variant="outlined"
                     size="small"
                     fullWidth={true}
-                    {...register("password")}
                   />
                 </Grid>
                 <Grid size={{ md: 6 }}>
-                  <TextField
+                  <RUInput
+                  name="customer.contactNumber"
                     label="contact Number"
                     type="tel"
-                    variant="outlined"
                     size="small"
                     fullWidth={true}
-                    {...register("customer.contactNumber")}
                   />
                 </Grid>
                 <Grid size={{ md: 6 }}>
-                  <TextField
+                  <RUInput
+                  name="customer.address"
                     label="Address"
                     type="text"
-                    variant="outlined"
                     size="small"
+                    placeholder="Give Address"
                     fullWidth={true}
-                    {...register("customer.address")}
                   />
                 </Grid>
               </Grid>
@@ -163,7 +176,7 @@ const RegisterPage = () => {
                 Do you already have an account?{" "}
                 <Link href={"/login"}>login</Link>
               </Typography>
-            </form>
+            </RUForm>
           </Box>
         </Box>
       </Stack>
