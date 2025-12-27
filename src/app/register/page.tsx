@@ -1,12 +1,5 @@
-"use client"
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
+"use client";
+import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import assest from "@/assets";
 import Link from "next/link";
@@ -16,9 +9,9 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { userLogin } from "@/services/actions/userLogin";
 import { storeUserInfo } from "@/services/auth-services";
-import RUForm from "@/services/ReUsableForms/RUForm";
+import RUForm from "@/components/ReUsableForms/RUForm";
 import { FieldValues } from "react-hook-form";
-import RUInput from "@/services/ReUsableForms/RUInput";
+import RUInput from "@/components/ReUsableForms/RUInput";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -28,39 +21,42 @@ export const validationSchema = z.object({
   customer: z.object({
     name: z.string().min(1, "Give a valid customer name"),
     email: z.email("Give a proper email"),
-    contactNumber: z.string().regex(/^\d{11}$/, "Give a BD valid cell phone number"),
-    address: z.string().min(1,"Give your address").optional()
-  })
-})
+    contactNumber: z
+      .string()
+      .regex(/^\d{11}$/, "Give a BD valid cell phone number"),
+    address: z.string().min(1, "Give your address").optional(),
+  }),
+});
 
 const RegisterPage = () => {
-
   const router = useRouter();
   const [error, setError] = useState("");
 
-    const handleRegister = async (data: FieldValues) => {
-      data.customer.gender = "MALE"
-      const payload = modifyPayload(data)
-      try{
-        const res = await createCustomer(payload)
-        if(res?.data?.id){
-          toast.success(res?.message)
-                const result = await userLogin({email:data.customer.email, password: data.password});
-                if (result?.data?.accessToken) {
-                  storeUserInfo({ accessToken: result?.data?.accessToken });
-                  router.push("/")
-                }
-        }else{
-          toast.error(res?.message)
-          setError(res.message)
+  const handleRegister = async (data: FieldValues) => {
+    data.customer.gender = "MALE";
+    const payload = modifyPayload(data);
+    try {
+      const res = await createCustomer(payload);
+      if (res?.data?.id) {
+        toast.success(res?.message);
+        const result = await userLogin({
+          email: data.customer.email,
+          password: data.password,
+        });
+        if (result?.data?.accessToken) {
+          storeUserInfo({ accessToken: result?.data?.accessToken });
+          router.push("/");
         }
-      }catch(err){
-        console.error(err)
+      } else {
+        toast.error(res?.message);
+        setError(res.message);
       }
+    } catch (err) {
+      console.error(err);
     }
+  };
   return (
-    <Container
-    >
+    <Container>
       <Stack
         sx={{
           height: "100vh",
@@ -115,11 +111,14 @@ const RegisterPage = () => {
             </Box>
           )}
           <Box>
-            <RUForm onSubmit={handleRegister} resolver={zodResolver(validationSchema)}>
+            <RUForm
+              onSubmit={handleRegister}
+              resolver={zodResolver(validationSchema)}
+            >
               <Grid container spacing={2}>
                 <Grid size={{ md: 12 }}>
                   <RUInput
-                  name="customer.name"
+                    name="customer.name"
                     label="Name"
                     size="small"
                     fullWidth={true}
@@ -127,7 +126,7 @@ const RegisterPage = () => {
                 </Grid>
                 <Grid size={{ md: 6 }}>
                   <RUInput
-                  name="customer.email"
+                    name="customer.email"
                     label="Email"
                     type="email"
                     size="small"
@@ -136,7 +135,7 @@ const RegisterPage = () => {
                 </Grid>
                 <Grid size={{ md: 6 }}>
                   <RUInput
-                  name="password"
+                    name="password"
                     label="Password"
                     type="password"
                     size="small"
@@ -145,7 +144,7 @@ const RegisterPage = () => {
                 </Grid>
                 <Grid size={{ md: 6 }}>
                   <RUInput
-                  name="customer.contactNumber"
+                    name="customer.contactNumber"
                     label="contact Number"
                     type="tel"
                     size="small"
@@ -154,7 +153,7 @@ const RegisterPage = () => {
                 </Grid>
                 <Grid size={{ md: 6 }}>
                   <RUInput
-                  name="customer.address"
+                    name="customer.address"
                     label="Address"
                     type="text"
                     size="small"

@@ -1,4 +1,3 @@
-import assest from "@/assets";
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 
@@ -19,12 +18,12 @@ export interface Category {
   createdAt: string; // or Date if you're parsing
   updatedAt: string; // or Date
   productCategory?: ProductCategory[]; // Replace `any` with proper type if needed
-  image?: string; // Future-proof: optional image URL
+  image: string; // Future-proof: optional image URL
 }
 
 
 const Categories = async () => {
-  const res = await fetch("https://e-commerce-gqcb.onrender.com/api/v1/category", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/category`, {
     next: {
       revalidate: 30
     }
@@ -42,7 +41,7 @@ const Categories = async () => {
     <Typography component="p" fontWeight={400} fontSize={18}>An about endless items on needs category</Typography>
   </Box>
   <Stack direction="row" gap={4} mt={5}>
-    {categories.map((Category: Category) => <Box key={Category.id} sx={{
+    {categories.map((category: Category) => <Box key={category.id} sx={{
       flex: 1,
       width: "150px",
       backgroundColor: "rgba(245, 245, 245, 1)",
@@ -61,9 +60,9 @@ const Categories = async () => {
       }
 
     }}>
-      <Image src={assest.images.laptops} alt="category image" width={100} height={100}/>
+      <Image src={category?.image} alt="category image" width={100} height={100}/>
       <Box>
-         <Typography component="p" fontWeight={400} fontSize={18} mt={1}>{Category.name}</Typography>
+         <Typography component="p" fontWeight={400} fontSize={18} mt={1}>{category.name}</Typography>
       </Box>
     </Box>)}
 

@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
+import ProductCard from "./ProductCard";
 
 export interface Product {
   id: string;
@@ -64,42 +65,7 @@ const TopRatedProducts = async () => {
       >
         <Grid container spacing={4}>
           {products?.map((product: Product) => (
-            <Grid key={product.id} size={{ xs: 6, md: 4 }}>
-              <Card>
-                <Box>
-                  <Image
-                    src={product.images}
-                    alt="Product image"
-                    width={100}
-                    height={100}
-                  />
-                </Box>
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    component="h1"
-                    sx={{ color: "text.secondary" }}
-                  >
-                    BDT {product.basePrice}
-                  </Typography>
-                  <Typography gutterBottom variant="h5" component="div">
-                    {product.name}
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                    {product.description}
-                  </Typography>
-                </CardContent>
-                <CardActions
-                  sx={{
-                    justifyContent: "space-between",
-                    px: "20px",
-                  }}
-                >
-                  <Button>Add To Cart</Button>
-                  <Button variant="outlined">Vew Details</Button>
-                </CardActions>
-              </Card>
-            </Grid>
+            <ProductCard key={product.id} product={product}></ProductCard>
           ))}
         </Grid>
         <Box

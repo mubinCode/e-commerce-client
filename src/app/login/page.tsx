@@ -2,8 +2,8 @@
 import assest from "@/assets";
 import { userLogin } from "@/services/actions/userLogin";
 import { storeUserInfo } from "@/services/auth-services";
-import RUForm from "@/services/ReUsableForms/RUForm";
-import RUInput from "@/services/ReUsableForms/RUInput";
+import RUForm from "@/components/ReUsableForms/RUForm";
+import RUInput from "@/components/ReUsableForms/RUInput";
 import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
