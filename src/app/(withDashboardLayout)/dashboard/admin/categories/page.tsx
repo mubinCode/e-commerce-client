@@ -14,7 +14,6 @@ const Categorypage = () => {
   const { data, isLoading } = useGetAllCategoriesQuery({});
   const [deleteCategory] = useDeleteCategoryMutation();
   const handleDelete = async (id: string) => {
-    console.log(id);
     try {
         const res = await deleteCategory(id).unwrap();
         if(res?.id){

@@ -1,15 +1,19 @@
 import {
   Box,
   Button,
-  Card,
-  CardActions,
-  CardContent,
   Container,
   Grid,
   Typography,
 } from "@mui/material";
-import Image from "next/image";
 import ProductCard from "./ProductCard";
+
+type TVariant = {
+  id: string;
+  sku: string;
+  price: number;
+  quantity: number;
+  size: string;
+};
 
 export interface Product {
   id: string;
@@ -30,6 +34,7 @@ export interface Product {
   images: string; // or string[] if multiple images are expected
   brand: string;
   categories: string[]; // or Category[] if you need full data
+  variants: TVariant[];
 }
 
 const TopRatedProducts = async () => {

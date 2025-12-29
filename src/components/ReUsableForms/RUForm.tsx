@@ -14,7 +14,6 @@ const RUForm = <T extends FieldValues>({children, onSubmit, resolver}: TFromProp
   }
     const methods = useForm(formConfig)
     const submit : SubmitHandler<FieldValues> = (data) => {
-        console.log(data)
         onSubmit(data)
     }
     return (

@@ -32,7 +32,6 @@ const CategoryModal = ({ open, setOpen }: TProps) => {
 
   const handleFormSubmit = async (values: FieldValues) => {
     const data = modifyPayload(values);
-    console.log(data);
     try {
       const res = await createCategory(data).unwrap();
       if (res?.id) {
