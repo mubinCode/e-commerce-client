@@ -1,6 +1,11 @@
 import { MenuItem, SxProps, TextField } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 
+export interface SelectItem {
+  label: string;
+  value: string | number;
+}
+
 interface ISelectField {
   name: string;
   size?: "small" | "medium";
@@ -9,7 +14,7 @@ interface ISelectField {
   required?: boolean;
   fullWidth?: boolean;
   sx?: SxProps;
-  items: string[];
+  items: SelectItem[];
 }
 const RUSelectField = ({
   name,
@@ -41,8 +46,8 @@ const RUSelectField = ({
           }
         >
           {items.map((name) => (
-            <MenuItem key={name} value={name}>
-              {name}
+            <MenuItem key={name.value} value={name.value}>
+              {name.label}
             </MenuItem>
           ))}
         </TextField>

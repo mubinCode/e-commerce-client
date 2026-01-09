@@ -45,6 +45,8 @@ const RegisterPage = () => {
         });
         if (result?.data?.accessToken) {
           storeUserInfo({ accessToken: result?.data?.accessToken });
+          window.dispatchEvent(new Event("auth-change"));
+          await new Promise(resolve => setTimeout(resolve, 1000));
           router.push("/");
         }
       } else {

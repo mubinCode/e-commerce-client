@@ -4,7 +4,6 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import GroupIcon from "@mui/icons-material/Group";
 import CategoryIcon from "@mui/icons-material/Category";
 import PixIcon from '@mui/icons-material/Pix';
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ViewStreamIcon from "@mui/icons-material/ViewStream";
 import EggIcon from "@mui/icons-material/Egg";
@@ -62,6 +61,11 @@ export const drawerItems = (role: UserRole): IDraweItem[] => {
         {
           title: "Orders",
           path: `${role}/orders`,
+          icon: ViewStreamIcon,
+        },
+        {
+          title: "Failed Payments",
+          path: `${role}/failed-payments`,
           icon: ViewStreamIcon,
         }
       );

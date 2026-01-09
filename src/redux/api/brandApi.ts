@@ -1,7 +1,7 @@
 import { tagTypes } from "../tagTypes"
 import { baseApi } from "./baseApi"
 
-const extendedApi = baseApi.injectEndpoints({
+const brandApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     createBrand: build.mutation({
       query: (data) => ({
@@ -16,4 +16,4 @@ const extendedApi = baseApi.injectEndpoints({
   overrideExisting: false,
 })
 
-export const { useCreateBrandMutation } = extendedApi
+export const { useCreateBrandMutation } = brandApi

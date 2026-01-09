@@ -7,7 +7,7 @@ import RUInput from "@/components/ReUsableForms/RUInput";
 import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -21,6 +21,7 @@ export const validationSchema = z.object({
 
 const LoginPage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [error, setError] = useState("");
   const handleLogin = async (data: FieldValues) => {
     try {
@@ -28,7 +29,16 @@ const LoginPage = () => {
       if (res?.data?.accessToken) {
         toast.success(res.message);
         storeUserInfo({ accessToken: res?.data?.accessToken });
-        router.push("/");
+        window.dispatchEvent(new Event("auth-change"));
+        const redirect = searchParams.get('redirect');
+        const storedRedirect = sessionStorage.getItem('redirectAfterLogin');
+        
+        if (redirect === 'checkout' || storedRedirect === '/checkout') {
+          sessionStorage.removeItem('redirectAfterLogin');
+          router.push('/checkout');
+        } else {
+          router.push('/');
+        }
       } else {
         toast.error(res.message);
         setError(res.message);

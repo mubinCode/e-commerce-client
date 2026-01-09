@@ -1,7 +1,6 @@
 import { USER_ROLE } from "@/constants/role";
 import { SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
-import { number, string } from "zod";
 
 export type TMeta = {
     page: number;
@@ -33,3 +32,41 @@ export interface IErrorResponse  {
     message: string,
     errorMessage: IErrorMessage[]
 }
+export interface CartItemType {
+    variantId: string
+    quantity: number
+    price: number
+  }
+
+  export interface OrderItemPayload {
+    variantId: string;
+    quantity: number;
+    price: number;
+  }
+  
+  export interface BaseOrderPayload {
+    contactNumber: string;
+    deliveryType: "HOME" | "PICKUP";
+    paymentMethod: string;
+    items: OrderItemPayload[];
+    subtotal: number;
+    deliveryFee: number;
+    total: number;
+  }
+
+  export interface HomeDeliveryOrderPayload extends BaseOrderPayload {
+    deliveryType: "HOME";
+    address: string;
+    city: string;
+    country: string;
+  }
+  
+  export interface PickupDeliveryOrderPayload extends BaseOrderPayload {
+    deliveryType: "PICKUP";
+    pickupPointId: string;
+  }
+  export type OrderPayload =
+  | HomeDeliveryOrderPayload
+  | PickupDeliveryOrderPayload;
+  
+  

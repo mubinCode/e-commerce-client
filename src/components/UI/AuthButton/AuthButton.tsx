@@ -8,6 +8,7 @@ const AuthButton = () => {
     const userInfo = getAuthInfo();
     const handleLogout = () => {
       removeAuthUser();
+      window.dispatchEvent(new Event("auth-change"));
       router.refresh();
     };
     return <>
