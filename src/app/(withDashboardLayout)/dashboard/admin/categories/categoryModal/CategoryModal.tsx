@@ -22,9 +22,6 @@ export const validationSchema = z.object({
   description: z.string().min(2, "Give your category description").optional(),
   parentSlug: z.string().min(2, "Parent slug").optional(),
   file: z.instanceof(File, { message: "File is required" })
-  // .refine((file) => file instanceof File, {
-  //   message: "File is required",
-  // }),
 });
 
 const CategoryModal = ({ open, setOpen }: TProps) => {

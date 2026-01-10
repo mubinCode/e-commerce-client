@@ -47,7 +47,6 @@ interface FailedPayment {
     city?: string;
     address?: string;
   };
-//   cartItems: any[];
   retryCount: number;
 }
 

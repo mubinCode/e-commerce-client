@@ -46,3 +46,16 @@ export interface IOrderPayload {
     size: string;
     variantQuantity: number;
   }
+
+  export type PaymentStatusResponse = {
+    status: string;
+    orderId: string;
+    paymentStatus: string;
+    message: string;
+  };
+  
+  export type ApiResponse<T> = {
+    success: boolean;
+    message: string;
+    data: T;
+  };

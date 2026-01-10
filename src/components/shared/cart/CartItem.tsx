@@ -27,7 +27,6 @@ const CartItem = ({
   onDecrease,
   onRemove,
 }: CartItemProps) => {
-  // console.log(product);
   return (
     <div className="flex gap-4 border p-4 rounded">
       {product?.image && (

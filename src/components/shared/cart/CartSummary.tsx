@@ -31,32 +31,6 @@ const CartSummary = ({ cart }: Props) => {
     router.push('/checkout');
   };
 
-  // return (
-  //   <div className="pt-6">
-  //     <div className="flex justify-between">
-  //       <span>Subtotal</span>
-  //       <span>${subtotal.toFixed(2)}</span>
-  //     </div>
-
-  //     <div className="flex justify-between">
-  //       <span>Delivery Fee</span>
-  //       <span>${deliveryFee.toFixed(2)}</span>
-  //     </div>
-
-  //     <div className="flex justify-between font-bold text-lg mt-2">
-  //       <span>Total</span>
-  //       <span>${total.toFixed(2)}</span>
-  //     </div>
-
-  //     <button
-  //       type="button"
-  //       className="mt-4 w-full bg-black text-white py-3 rounded"
-  //       onClick={() => alert("Proceed to checkout")}
-  //     >
-  //       Checkout
-  //     </button>
-  //   </div>
-  // )
   return (
     <div className="pt-6 border p-4 rounded">
       <h2 className="text-xl font-bold mb-4">Order Summary</h2>

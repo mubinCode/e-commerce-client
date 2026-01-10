@@ -5,7 +5,6 @@ const cartApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     createCart: build.mutation({
       query: (data) => {
-        console.log(data);
         return {
           url: "/cart",
           method: "POST",
@@ -33,7 +32,6 @@ const cartApi = baseApi.injectEndpoints({
     }),
     updateCart: build.mutation({
       query: ({ variantId, quantity }) => {
-        console.log("quantity : ", quantity);
         return         {
         url: `/cart/${variantId}`,
         method: "PATCH",

@@ -1,3 +1,4 @@
+import { ApiResponse, PaymentStatusResponse } from "@/types";
 import { tagTypes } from "../tagTypes";
 import { baseApi } from "./baseApi";
 
@@ -6,7 +7,6 @@ export const orderApi = baseApi.injectEndpoints({
     // Create order (COD)
     createOrder: builder.mutation({
       query: (orderData) => {
-        console.log(orderData);
         return {
         url: "/order/create",
         method: "POST",
@@ -63,6 +63,14 @@ export const orderApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.order],
     }),
 
+    checkPaymentStatus: builder.mutation({
+      query: (data) => ({
+        url: `/order/payment/status?transactionId=${data.transactionId}`,
+        method: 'GET',
+      }),
+      transformResponse: (response: ApiResponse<PaymentStatusResponse>) => response.data || response,
+    }),
+
     // Admin: Get failed payments
     getFailedPayments: builder.query({
       query: () => ({
@@ -93,4 +101,5 @@ export const {
   useGetOrderQuery,
   useGetFailedPaymentsQuery,
   useInitiateRefundMutation,
+  useCheckPaymentStatusMutation
 } = orderApi;
