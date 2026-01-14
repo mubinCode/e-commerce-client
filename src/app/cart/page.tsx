@@ -1,10 +1,11 @@
 "use client";
 
+import LogoLink from "@/components/logo/LogoLink";
 import CartItem from "@/components/shared/cart/CartItem";
 import CartSummary from "@/components/shared/cart/CartSummary";
 import { useCart } from "@/context/CartContext";
 import { useGetSelectedCartMutation } from "@/redux/api/cartApi";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Container, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 import { useEffect, useMemo } from "react";
 
@@ -50,19 +51,11 @@ const CartPage = () => {
     });
   }, [effectiveCart, cartData]);
 
-  //   if (isLoading) return <p>Loading cart...</p>;
-
   if (effectiveCart.length === 0)
     return (
-      <Box>
-        <Typography variant="h4" component={Link} href="/" fontWeight={600}>
-          C
-          <Box component="span" color="primary.main">
-            l
-          </Box>
-          ient App
-        </Typography>
-      </Box>
+      <Container>
+        <LogoLink />
+      </Container>
     );
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-4">

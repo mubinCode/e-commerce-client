@@ -1,14 +1,22 @@
-import { Container, Box, Typography, Stack } from "@mui/material";
+"use client";
+
+import React, { useEffect } from "react";
+import { Container, Stack, Box, Typography } from "@mui/material";
+import { useCart } from "@/context/CartContext";
 import LogoLink from "@/components/logo/LogoLink";
 
 type PageProps = {
-  params: {
-    orderId: string;
-  };
+  params: Promise<{ orderId: string }>;
 };
 
-const OrderConfirmationPage = async ({ params }: PageProps) => {
-  const { orderId } = await params;
+const OrderConfirmationPage = ({ params }: PageProps) => {
+  const { orderId } = React.use(params); // unwrap params Promise
+
+  const { clearCart } = useCart();
+
+  useEffect(() => {
+    clearCart();
+  }, [clearCart]);
 
   return (
     <Container>

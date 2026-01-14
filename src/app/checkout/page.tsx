@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
 import {
@@ -165,11 +165,13 @@ const DynamicDeliveryFields = ({
 
 const CheckoutPage = () => {
   const router = useRouter();
-  const { effectiveCart, clearCart } = useCart();
+  const { effectiveCart } = useCart();
+  const pathname = usePathname();
   const userInfo = useAuth();
   const isLoggedIn = !!userInfo?.role;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [pickupPoints, setPickupPoints] = useState<IPickupPoint[]>([]);
+  const isCompletingOrder = useRef(false);
 
   const cartItemIds = useMemo(
     () => effectiveCart.map((item) => item.variantId),
@@ -234,13 +236,17 @@ const CheckoutPage = () => {
     }
   }, [isLoggedIn, router]);
 
-  // Redirect if cart is empty
   useEffect(() => {
-    if (isLoggedIn && effectiveCart.length === 0) {
+    if (
+      isLoggedIn &&
+      effectiveCart.length === 0 &&
+      !pathname.startsWith("/order-confirmation") &&
+      !isCompletingOrder.current
+    ) {
       toast.error("Your cart is empty");
       router.push("/");
     }
-  }, [effectiveCart, isLoggedIn, router]);
+  }, [effectiveCart, isLoggedIn, pathname, router]);  
 
   // Calculate totals
   const subtotal = mergedCart.reduce(
@@ -281,7 +287,7 @@ const CheckoutPage = () => {
 
         if (response?.orderId) {
           toast.success("Order placed successfully!");
-          clearCart();
+          isCompletingOrder.current = true;
           router.push(`/order-confirmation/${response.orderId}`);
         } else {
           toast.error(response?.message || "Failed to place order");

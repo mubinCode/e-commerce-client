@@ -1,56 +1,64 @@
 "use client";
+import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material";
+import Image from "next/image";
 import assest from "@/assets";
+import Link from "next/link";
+import { modifyPayload } from "@/utils/modifyPayload";
+import { createCustomer } from "@/services/actions/createCustomer";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import { userLogin } from "@/services/actions/userLogin";
 import { storeUserInfo } from "@/services/auth-services";
 import RUForm from "@/components/ReUsableForms/RUForm";
-import RUInput from "@/components/ReUsableForms/RUInput";
-import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { FieldValues } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
+import RUInput from "@/components/ReUsableForms/RUInput";
+import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useRedirectTo } from "@/utils/redirect";
 
 export const validationSchema = z.object({
-  email: z.email("Please give a valid email"),
   password: z.string().min(6, "Please give valid password"),
+  customer: z.object({
+    name: z.string().min(1, "Give a valid customer name"),
+    email: z.email("Give a proper email"),
+    contactNumber: z
+      .string()
+      .regex(/^\d{11}$/, "Give a BD valid cell phone number"),
+    address: z.string().min(1, "Give your address").optional(),
+  }),
 });
 
-const LoginClient = () => {
+const RegisterClient = () => {
   const router = useRouter();
   const redirectTo = useRedirectTo();
   const [error, setError] = useState("");
-  const handleLogin = async (data: FieldValues) => {
-    try {
-      const res = await userLogin(data);
-      if (res?.data?.accessToken) {
-        toast.success(res.message);
-        storeUserInfo({ accessToken: res?.data?.accessToken });
-        window.dispatchEvent(new Event("auth-change"));
-        // const redirect = searchParams.get('redirect');
-        // const storedRedirect = sessionStorage.getItem('redirectAfterLogin');
-        
-        // if (redirect === 'checkout' || storedRedirect === '/checkout') {
-        //   sessionStorage.removeItem('redirectAfterLogin');
-        //   router.push('/checkout');
-        // } else {
-        //   router.push('/');
-        // }
-        router.push(redirectTo());
 
+  const handleRegister = async (data: FieldValues) => {
+    data.customer.gender = "MALE";
+    const payload = modifyPayload(data);
+    try {
+      const res = await createCustomer(payload);
+      if (res?.data?.id) {
+        toast.success(res?.message);
+        const result = await userLogin({
+          email: data.customer.email,
+          password: data.password,
+        });
+        if (result?.data?.accessToken) {
+          storeUserInfo({ accessToken: result?.data?.accessToken });
+          window.dispatchEvent(new Event("auth-change"));
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          router.push(redirectTo())
+        }
       } else {
-        toast.error(res.message);
+        toast.error(res?.message);
         setError(res.message);
       }
     } catch (err) {
       console.error(err);
     }
   };
-
   return (
     <Container>
       <Stack
@@ -86,7 +94,7 @@ const LoginClient = () => {
             </Box>
             <Box margin={2}>
               <Typography variant="h3" color="primary" fontWeight={600}>
-                Login Here
+                User Registration
               </Typography>
             </Box>
           </Stack>
@@ -108,17 +116,25 @@ const LoginClient = () => {
           )}
           <Box>
             <RUForm
-              onSubmit={handleLogin}
+              onSubmit={handleRegister}
               resolver={zodResolver(validationSchema)}
             >
               <Grid container spacing={2}>
+                <Grid size={{ md: 12 }}>
+                  <RUInput
+                    name="customer.name"
+                    label="Name"
+                    size="small"
+                    fullWidth={true}
+                  />
+                </Grid>
                 <Grid size={{ md: 6 }}>
                   <RUInput
-                    name="email"
+                    name="customer.email"
                     label="Email"
                     type="email"
+                    size="small"
                     fullWidth={true}
-                    // required={true}
                   />
                 </Grid>
                 <Grid size={{ md: 6 }}>
@@ -126,19 +142,30 @@ const LoginClient = () => {
                     name="password"
                     label="Password"
                     type="password"
+                    size="small"
                     fullWidth={true}
-                    // required={true}
+                  />
+                </Grid>
+                <Grid size={{ md: 6 }}>
+                  <RUInput
+                    name="customer.contactNumber"
+                    label="contact Number"
+                    type="tel"
+                    size="small"
+                    fullWidth={true}
+                  />
+                </Grid>
+                <Grid size={{ md: 6 }}>
+                  <RUInput
+                    name="customer.address"
+                    label="Address"
+                    type="text"
+                    size="small"
+                    placeholder="Give Address"
+                    fullWidth={true}
                   />
                 </Grid>
               </Grid>
-              <Typography
-                textAlign="end"
-                component="p"
-                fontWeight={200}
-                margin="5px 0px"
-              >
-                forgot password?
-              </Typography>
               <Button
                 sx={{
                   margin: "10px 0px",
@@ -146,11 +173,11 @@ const LoginClient = () => {
                 fullWidth={true}
                 type="submit"
               >
-                Login
+                Register
               </Button>
               <Typography component="p" fontWeight={200}>
-                Don&apos;t have an account? please{" "}
-                <Link href={"/register"}>Register</Link>
+                Do you already have an account?{" "}
+                <Link href={"/login"}>login</Link>
               </Typography>
             </RUForm>
           </Box>
@@ -160,4 +187,4 @@ const LoginClient = () => {
   );
 };
 
-export default LoginClient;
+export default RegisterClient;

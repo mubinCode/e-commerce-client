@@ -7,8 +7,8 @@ const HomePage = () => {
   return (
     <>
       <MainSection/>
-      <Categories/>
       <TopRatedProducts />
+      <Categories/>
       <WhyUs />
     </>
   );
